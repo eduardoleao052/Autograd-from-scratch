@@ -10,7 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2    # checkout the repo
-      - run: cd src
-      - run: pwd
-      - run: ls
-      - run: python test_framework.py
+      - run: python /src/test_framework.py
