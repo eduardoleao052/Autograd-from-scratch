@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2    # checkout the repo
-      - run: python /src/test_framework.py
+      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/src/test_framework.py
