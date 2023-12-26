@@ -3,6 +3,7 @@ import optim
 import nn
 import numpy as np
 import unittest
+import os
 
 class TestFramework(unittest.TestCase):
 
@@ -26,7 +27,7 @@ class TestFramework(unittest.TestCase):
         w3 = framework.tensor(np.random.randn(128,50) / np.sqrt(128), requires_grad=True)
 
         # Training Loop:
-        for _ in range(1000):
+        for _ in range(2000):
             z = x @ w1
             z = relu1(z)
             z = z @ w2
@@ -197,8 +198,10 @@ class TestFramework(unittest.TestCase):
         n_heads = 8
         dropout_p = 0
 
+        PATH = os.getcwd()
+
         # Get tiny Shakespeare test data:
-        test_data, ix_to_char, vocab_size = load_text_data('/Users/eduardoleao/Documents/ML/NN/autograd/data/shakespeare.txt')
+        test_data, ix_to_char, vocab_size = load_text_data(f'{PATH}/data/shakespeare.txt')
 
         # Take small subset of the data to test wether the model converges:
         test_data = test_data[:128]
