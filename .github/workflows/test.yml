@@ -6,8 +6,10 @@ on:
 
 jobs:
   test:
-    name: TestFramework
+    name: Test framework
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2    # checkout the repo
+      - name: Install dependencies
+        run: pip install numpy
       - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/src/test_framework.py
