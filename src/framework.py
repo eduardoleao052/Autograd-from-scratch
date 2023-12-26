@@ -2,6 +2,7 @@
 import numpy as np
 
 # Methods to iniate Tensors:
+
 def tensor(data, requires_grad = False):
     '''
     Creates new instance of the Tensor class.
@@ -12,6 +13,16 @@ def tensor(data, requires_grad = False):
     @returns Tensor (Tensor): Tensor containing "data".
     '''
     return Tensor(data, requires_grad=requires_grad)
+
+def parameter(data, requires_grad=True):
+    '''
+    Creates a Parameter for your model (an instance of the Tensor class).
+
+    @param data (Array-like): Iterable containing the data to be stored in the Tensor.
+
+    @returns Tensor (Tensor): Tensor containing "data".
+    '''
+    return Parameter(data, requires_grad=True)
 
 def zeros(shape, requires_grad = False):
     '''
@@ -66,6 +77,18 @@ def randn(shape, requires_grad = False):
     data = np.random.randn(*shape)
     return Tensor(data, requires_grad=requires_grad)
 
+def rand(shape, requires_grad = False):
+    '''
+    Creates new instance of the Tensor class, filled with floating point numbers in a normal distribution.
+
+    @param shape (tuple): iterable with the shape of the resulting Tensor.
+    @param requires_grad (Bool): Whether to keep track of the Tensor's gradients.
+
+    @returns Tensor (Tensor): Tensor containining normally distributed floats with "shape" shape.
+    '''
+    data = np.random.random(shape)
+    return Tensor(data, requires_grad=requires_grad)
+
 def zeros_like(other: Tensor, requires_grad = False):
     '''
     Creates new instance of the Tensor class with same shape as given Tensor, and filled with zeros.
@@ -116,6 +139,8 @@ def randint_like(other: Tensor, low: int, high: int=0, requires_grad = False):
         return randint(low, high, shape, requires_grad=requires_grad)
 
 # Methods to work with Tensors:
+
+# Statistics:
 def max(a, dim=-1, keepdims=False):
     return a.max(dim=dim, keepdims=keepdims)
 
@@ -125,6 +150,13 @@ def argmax(a, dim=-1, keepdims=False):
 def sum(a, dim=-1, keepdims=False):
     return a.sum(dim=dim, keepdims=keepdims)
 
+def mean(a, dim=-1, keepdims=False):
+    return a.mean(dim=dim, keepdims=keepdims)
+
+def var(a, dim=-1, keepdims=False):
+    return a.var(dim=dim, keepdims=keepdims)
+
+# Element-wise operations:
 def exp(a):
     op = Exp()
     return op.forward(a)
@@ -133,8 +165,24 @@ def log(a):
     op = Log()
     return op.forward(a)
 
+def sqrt(a):
+    op = Sqrt()
+    return op.forward(a)
+
+def where(condition, a, value):
+    return a.masked_fill(condition, value)
+
+# Tensor operations:
 def reshape(a, shape: tuple):
     return a.reshape(*shape)
 
 def transpose(a, dims: tuple):
     return a.transpose(*dims)
+
+def cat(tensors: tuple, dim: int):
+    op = Cat()
+    return op.forward(tensors, dim)
+
+def stack(tensors: tuple, dim: int):
+    op = Stack()
+    return op.forward(tensors, dim)
