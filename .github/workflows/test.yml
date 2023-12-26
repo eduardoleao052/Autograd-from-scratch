@@ -1,0 +1,10 @@
+on:
+  push:
+
+jobs:
+  test:
+    name: TestFramework
+    runs-on: MacOS
+    steps:
+      - uses: actions/checkout@v3     # checkout the repo
+      - run: python scr/test_framework.py
