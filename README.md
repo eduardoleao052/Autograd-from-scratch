@@ -107,8 +107,8 @@ pip install -r requirements.txt
 <summary> <h3> Build a Custom Model </h3> </summary>
   
 - To create a custom model class, you can use the exact same syntax as you would in PyTorch, inheriting from nn.Module.
-  <details>
-  <summary> You may chose among <b>the following layers</b>: </summary>
+<details>
+<summary> You may chose among <b>the following layers</b>: </summary>
       
     - `nn.Embedding` (first layer, turns input indexes into vectors)
     - `nn.PositionalEmbedding` (second layer, adds position information to every timestep of the input)
@@ -119,9 +119,9 @@ pip install -r requirements.txt
     - `nn.CrossEntropyLoss` (last layer, returns probabilities for next generated character)
 
 
-  </details>
-  <details>
-  <summary> And <b>the following functions</b>: </summary>
+</details>
+<details>
+<summary> And <b>the following functions</b>: </summary>
       
     - `nn.Dropout` (can be added to apply dropout)
     - `nn.LayerNorm` (normalizes the tensors)
@@ -130,7 +130,7 @@ pip install -r requirements.txt
     - `nn.Relu` (zeroes all negative values)
 
 
-  </details>
+</details>
 
 ## 3. Results
 - The models implemented in [test_framework.py](src/test_framework.py) all converged to __near-zero losses__.
