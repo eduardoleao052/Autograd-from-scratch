@@ -131,6 +131,7 @@ pip install -r requirements.txt
 
 
 </details>
+</details>
 
 ## 3. Results
 - The models implemented in [test_framework.py](src/test_framework.py) all converged to __near-zero losses__.
