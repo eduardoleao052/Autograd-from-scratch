@@ -9,5 +9,5 @@ jobs:
     name: TestFramework
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3     # checkout the repo
+      - uses: actions/checkout@v2    # checkout the repo
       - run: python scr/test_framework.py
