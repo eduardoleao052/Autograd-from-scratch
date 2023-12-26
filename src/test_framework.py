@@ -6,6 +6,7 @@ import unittest
 import os
 
 class TestFramework(unittest.TestCase):
+    ''' This class tests the functionalities of the framework in three levels of complexity. '''
 
     def test_autograd(self):
         '''
@@ -234,6 +235,7 @@ class TestFramework(unittest.TestCase):
         #print(sample(model, 1000, n_timesteps, vocab_size, ix_to_char))
         
         assert loss._data < 1, "Error: Loss is not converging to zero in autograd test."
+
 
 if __name__ == '__main__':
     unittest.main()

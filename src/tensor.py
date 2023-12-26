@@ -35,15 +35,19 @@ class Tensor:
                 self.operation.backward(self.grad, self)
 
     def tolist(self):
+        ''' Turns the Tensor into a python list. '''
         return self._data.tolist()
 
     def toarray(self):
+        ''' Turns the Tensor into a numpy array. '''
         return self._data
     
     def zero_grad(self):
+        ''' Reset the Tensor's gradients to zero. '''
         self.grad = np.zeros_like(self._data)
 
     def zero_grad_tree(self):
+        ''' Reset the gradients of this Tensor, and of all of the Tensors that led to it. '''
         self.zero_grad()
         if self.operation:
             for parent in self.operation.parents:
@@ -98,50 +102,101 @@ class Tensor:
         return op.forward(self, tensor(other))
 
     def __matmul__(self, other):
+        """ New = self @ other """
         op = MatMul()
         return op.forward(self, tensor(other))
     
     def __truediv__(self, other):
+        """ New = self / other """
         op = Div()
         return op.forward(self, tensor(other))
     
     def __getitem__(self, index): 
+        """ New = self[index] """
         op = Slice()
         return op.forward(self, index)
 
     def __gt__(self, other):
+        """ New = self > other """
         return self._data > array(other)
 
     def max(self, dim, keepdims=False):
+        """
+        Returns the largest values across the "dim" dimention.
+        Example: (B, T, D), dim = 1 -> (B, D).
+        
+        @param dim (int): dimention to be reduced (only largest remains).
+        @param keepdims (bool): wether to broadcast result to same shape as input.
+        """
         op = Max()
         return op.forward(self, dim, keepdims=keepdims)
 
     def sum(self, dim=-1, keepdims=False):
+        """
+        Returns the sum of all values across the "dim" dimention.
+        Example: (B, T, D), dim = 1 -> (B, D).
+        
+        @param dim (int): dimention to be summed across.
+        @param keepdims (bool): wether to broadcast result to same shape as input.
+        """
         op = Sum()
         return op.forward(self, dim, keepdims=keepdims)
 
     def mean(self, dim=-1, keepdims=False):
+        """
+        Returns the mean of all values across the "dim" dimention.
+        Example: (B, T, D), dim = 1 -> (B, D).
+
+        @param dim (int): dimention to be averaged across.
+        @param keepdims (bool): wether to broadcast result to same shape as input.
+        """
         op = Mean()
         return op.forward(self, dim, keepdims=keepdims)
 
     def var(self, dim=-1, keepdims=False):
+        """
+        Returns the variance of all values across the "dim" dimention.
+        Example: (B, T, D), dim = 1 -> (B, D).
+
+        @param dim (int): dimention the variance will be computed across.
+        @param keepdims (bool): wether to broadcast result to same shape as input.
+        """
         op = Var()
         return op.forward(self, dim, keepdims=keepdims)
 
     def reshape(self, *shape):
+        """
+        Returns the original tensor reshaped to the new shape given.
+        Example: (16, 8, 4), *shape =(2, 32, 8) -> (2, 32, 8)
+
+        @param *shape (integers): new shape of the tensor.
+        """
         op = Reshape()
         return op.forward(self, shape)
 
     def transpose(self, *dims):
+        """
+        Returns the original tensor with the two given dimentions transposed.
+        Example: (16, 8, 4), *dims=(-2,-1) -> (16, 4, 8)
+
+        @param *dims (integers): two dimentions to be transposed.
+        """
         op = Transpose()
         return op.forward(self, *dims)
 
     def masked_fill(self, condition, value):
+        """
+        Returns the original tensor with the values where condition is True set to "value".
+
+        @param condition (Array-like): two dimentions to be transposed.
+        @param value (float): value to fill Tensor with, where condition is True.
+        """
         op = MaskedFill()
-        return op.forward(self, condition, value )
+        return op.forward(self, array(condition), value )
 
 # Parameter subclass, inherits from Tensor:
 class Parameter(Tensor):
+    ''' Subclass of Tensor which always tracks gradients. '''
     def __init__(self, data, requires_grad = True, operation = None) -> None:
         super().__init__(data, requires_grad=requires_grad, operation=operation)
 

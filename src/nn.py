@@ -1,7 +1,7 @@
 ﻿from typing import Any
 import framework
 import numpy as np
-from tensor import Tensor, Parameter
+from tensor import Tensor, Parameter, array
 
 class Module:
     ''' General Module superclass'''
@@ -128,7 +128,12 @@ class MultiHeadSelfAttention(Module):
 
 # Embedding Layers
 class Embedding(Module):
+    ''' Embedding class, turns indexes into vectors. '''
     def __init__(self, in_size, embed_size):
+        '''
+        @param in_size (int): number of different indexes (vocabulary size).
+        @param embed_size (int): size of the embedding vector generated.
+        '''
         super().__init__()
         
         self.E = framework.tensor(np.random.randn(in_size, embed_size) / np.sqrt(in_size), requires_grad=True)
@@ -143,7 +148,12 @@ class Embedding(Module):
 
 
 class PositionalEmbedding(Module):
+    ''' Embedding class, turns indexes into vectors. '''
     def __init__(self, n_timesteps, embed_size):
+        '''
+        @param n_timesteps (int): number of timesteps processed in each element in the batch.
+        @param embed_size (int): size of the embedding vector generated.
+        '''
         super().__init__()
         self.E = framework.tensor(np.random.randn(n_timesteps, embed_size) / np.sqrt(n_timesteps), requires_grad=True)
 
@@ -156,7 +166,11 @@ class PositionalEmbedding(Module):
 
 # Regularization Layers:
 class Dropout(Module):
+    ''' Dropout class, added usually after other layers, to drop values to zero with given probability. '''
     def __init__(self,drop_prob):
+        '''
+        @param drop_prob (float): probability to drop each value in input.
+        '''
         super().__init__()
         self.p = drop_prob
         self.mode = 'train'
@@ -171,7 +185,11 @@ class Dropout(Module):
 
 
 class LayerNorm(Module):
+    ''' Layer Norm class, added usually after other layers to normalize across all of the output. '''
     def __init__(self, n_embed):
+        '''
+        @param n_embed (float): size of the last dimention of the imput.
+        '''
         super().__init__()
         self.gamma = framework.ones([1, n_embed], requires_grad=True)
         self.beta = framework.zeros([1, n_embed], requires_grad=True)
@@ -185,6 +203,7 @@ class LayerNorm(Module):
 
 # Non-Linearity Layers:
 class ReLU(Module):
+    ''' ReLU non-linearity class. '''
     def __init__(self):
         super().__init__()
 
@@ -195,10 +214,14 @@ class ReLU(Module):
 
 
 class Softmax(Module):
+    ''' Softmax non-linearity class. '''
     def __init__(self):
         super().__init__()
 
     def __call__(self, x, dim=-1):
+        '''
+        @param dim (int): dimention across which to apply Softmax.
+        '''
         return self.forward(x, dim)
 
     def forward(self, z, dim=-1):
@@ -208,6 +231,7 @@ class Softmax(Module):
 
 
 class Tanh(Module):
+    ''' Tanh non-linearity class. '''
     def __init__(self):
         super().__init__()
 
@@ -265,10 +289,20 @@ class Block(Module):
 
 # Loss Layer:
 class CrossEntropyLoss(Module):
+    ''' Cross Entropy Loss class, returns the loss given the output and the expected indexes. '''
     def __init__(self):
         super().__init__()
 
     def __call__(self, z, y):
+        '''
+        @param z (Tensor): output from the last dimention of the network. 
+        Must have shape like (*Batch dimentions, Number of possible classes).
+        @param y (any Array): correct indexes expected from the model.
+        Must have shape like (*Batch dimentions), with each value being the
+        expected index.
+
+        @returns loss (float): negative-log-likelihood loss of the model output.
+        '''
         return self.forward(z, y)
 
     def forward(self, z, y):
@@ -279,7 +313,7 @@ class CrossEntropyLoss(Module):
         logits = framework.exp(z)
         logits = logits / framework.sum(logits, dim= 1, keepdims=True)
 
-        y = y.reshape(B)
+        y = array(y).reshape(B)
             
         # get cross-entropy loss:
         log_losses = framework.log(logits[np.arange(B), y])
