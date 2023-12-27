@@ -19,7 +19,7 @@
 
 # Deep Learning Framework From Scratch
 - Unit-tested and documented educational framework. Similar to PyTorch, but with simpler sintax.
-- The __autograd engine__ is in [tensor.py](src/tensor.py).
+- The __autograd engine__ is in [tensor.py](src/tensor.py). I got a lot of inspiration from Andrej Karpathy's __micrograd__ videos.
 - The deep learning model __layers__ are in [nn.py](src/nn.py).
 <br/>
 <details>
