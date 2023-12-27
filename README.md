@@ -186,13 +186,13 @@ pip install -r requirements.txt
 <details>
 <summary> You may chose among <b>the following layers</b>: </summary>
       
-    - `nn.Embedding` (first layer, turns input indexes into vectors)
-    - `nn.PositionalEmbedding` (second layer, adds position information to every timestep of the input)
-    - `nn.Linear` (simple fully-connected layer)
-    - `nn.MultiHeadSelfAttention` (core of the transformer, calculates weighted sum of inputs)
-    - `nn.RNN` (Recurrent Neural Network layer)
-    - `nn.Block` (full transformer block - connects MHSA and Dense layers with residuals and LayerNorm)
-    - `nn.CrossEntropyLoss` (last layer, returns probabilities for next generated character)
+    - __nn.Embedding__ (first layer, turns input indexes into vectors)
+    - __nn.PositionalEmbedding__ (second layer, adds position information to every timestep of the input)
+    - __nn.Linear__ (simple fully-connected layer)
+    - __nn.MultiHeadSelfAttention__ (core of the transformer, calculates weighted sum of inputs)
+    - __nn.RNN__ (Recurrent Neural Network layer)
+    - __nn.Block__ (full transformer block - connects MHSA and Dense layers with residuals and LayerNorm)
+    - __nn.CrossEntropyLoss__ (last layer, returns probabilities for next generated character)
 
 
 </details>
