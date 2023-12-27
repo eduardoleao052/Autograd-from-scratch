@@ -185,7 +185,8 @@ pip install -r requirements.txt
 - To create a custom model class, you can use the exact same syntax as you would in PyTorch, inheriting from nn.Module.
 <details>
 <summary> You may chose among <b>the following layers</b>: </summary>
-      
+
+```   
 - nn.Embedding (first layer, turns input indexes into vectors)
 - nn.PositionalEmbedding (second layer, adds position information to every timestep of the input)
 - nn.Linear (simple fully-connected layer)
@@ -193,18 +194,19 @@ pip install -r requirements.txt
 - nn.RNN (Recurrent Neural Network layer)
 - nn.Block (full transformer block - connects MHSA and Dense layers with residuals and LayerNorm)
 - nn.CrossEntropyLoss (last layer, returns probabilities for next generated character)
-
+```
 
 </details>
 <details>
 <summary> And <b>the following functions</b>: </summary>
-      
-    - `nn.Dropout` (can be added to apply dropout)
-    - `nn.LayerNorm` (normalizes the tensors)
-    - `nn.Softmax` (scales the values between 0 and 1)
-    - `nn.Tanh` (scales the values between -1 and 1)
-    - `nn.Relu` (zeroes all negative values)
 
+```
+- nn.Dropout (can be added to apply dropout)
+- nn.LayerNorm (normalizes the tensors)
+- nn.Softmax (scales the values between 0 and 1)
+- nn.Tanh (scales the values between -1 and 1)
+- nn.Relu (zeroes all negative values)
+```
 
 </details>
 </details>
