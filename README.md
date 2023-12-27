@@ -91,6 +91,41 @@
 - `data/` : Folder to store the text file used to test the Transformer. Currently holds `shakespeare.txt`.
     
 ## 2. Running it Yourself
+### Autograd in Action: 
+```python
+import framework
+
+# Define loss function as Cross Entropy Loss:
+loss_func = nn.CrossEntropyLoss()
+
+# Instantiate input and output:
+x = framework.randn((8,4,5))
+y = framework.randint(0,50,(8,4))
+
+# Instantiate Neural Network's Layers:
+w1 = framework.randn((5,128), requires_grad=True) / np.sqrt(5)
+relu1 = nn.ReLU()
+w2 = framework.tensor((128,50), requires_grad=True) / np.sqrt(128)
+
+# Training Loop:
+for _ in range(2000):
+    z = x @ w1
+    z = relu1(z)
+    z = z @ w2
+            
+    # Get loss:
+    loss = loss_func(z, y)
+
+    # Backpropagate the loss using framework.tensor:
+    loss.backward()
+
+    # Update the weights:
+    w1 = w1 - (w1.grad * 0.01) 
+    w2 = w2 - (w2.grad * 0.01) 
+
+    # Reset the gradients to zero after each training step:
+    loss.zero_grad()
+```
 <details>
 <summary> <h3> Requirements </h3> </summary>
   
