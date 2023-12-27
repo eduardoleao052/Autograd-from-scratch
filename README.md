@@ -91,40 +91,81 @@
 - `data/` : Folder to store the text file used to test the Transformer. Currently holds `shakespeare.txt`.
     
 ## 2. Running it Yourself
-### Autograd in Action: 
+### Simple Autograd Example: 
 ```python
 import framework
 
-# Define loss function as Cross Entropy Loss:
+# Instantiate Tensors:
+x = framework.randn((8,4,5), requires_grad = True)
+w = framework.randn((8,5,4), requires_grad = True)
+b = framework.randint((5), requires_grad = True)
+
+# Make calculations:
+x = x @ w
+x = x + b
+
+# Compute gradients on whole graph:
+x.backward()
+
+# Get gradients from specific Tensors:
+print(w.grad)
+print(b.grad)
+
+```
+
+### Complex Autograd Example (Transformer): 
+```python
+import framework
+import framework.nn as nn
+
+# Implement Transformer class inheriting from framework.nn.Module:
+class Transformer(nn.Module):
+    def __init__(self, vocab_size: int, hidden_size: int, n_timesteps: int, n_heads: int, p: float):
+        super().__init__()
+        # Instantiate Transformer's Layers:
+        self.embed = nn.Embedding(vocab_size, hidden_size)
+        self.pos_embed = nn.PositionalEmbedding(n_timesteps, hidden_size)
+        self.b1 = nn.Block(hidden_size, hidden_size, n_heads, n_timesteps, dropout_prob=p) 
+        self.b2 = nn.Block(hidden_size, hidden_size, n_heads, n_timesteps, dropout_prob=p)
+        self.ln = nn.LayerNorm(hidden_size)
+        self.linear = nn.Linear(hidden_size, vocab_size)
+
+    def forward(self, x):
+        z = self.embed(x) + self.pos_embed(x)
+        z = self.b1(z)
+        z = self.b2(z)
+        z = self.ln(z)
+        z = self.linear(z)
+
+        return z
+
+# Get tiny Shakespeare test data:
+text = load_text_data(f'{PATH}/data/shakespeare.txt')
+
+# Create Transformer instance:
+model = Transformer(vocab_size, hidden_size, n_timesteps, n_heads, dropout_p)
+
+# Define loss function and optimizer:
 loss_func = nn.CrossEntropyLoss()
-
-# Instantiate input and output:
-x = framework.randn((8,4,5))
-y = framework.randint(0,50,(8,4))
-
-# Instantiate Neural Network's Layers:
-w1 = framework.randn((5,128), requires_grad=True) / np.sqrt(5)
-relu1 = nn.ReLU()
-w2 = framework.tensor((128,50), requires_grad=True) / np.sqrt(128)
-
+optimizer = optim.Adam(model.parameters(), lr=0.01, reg=0)
+        
 # Training Loop:
-for _ in range(2000):
-    z = x @ w1
-    z = relu1(z)
-    z = z @ w2
-            
+for _ in range(n_iters):
+    x, y = get_batch(test_data, n_timesteps, batch_size)
+
+    z = model.forward(x)
+
     # Get loss:
     loss = loss_func(z, y)
 
-    # Backpropagate the loss using framework.tensor:
+    # Backpropagate the loss using framework.tensor's backward() method:
     loss.backward()
 
     # Update the weights:
-    w1 = w1 - (w1.grad * 0.01) 
-    w2 = w2 - (w2.grad * 0.01) 
+    optimizer.step()
 
     # Reset the gradients to zero after each training step:
-    loss.zero_grad()
+    optimizer.zero_grad()
 ```
 <details>
 <summary> <h3> Requirements </h3> </summary>
