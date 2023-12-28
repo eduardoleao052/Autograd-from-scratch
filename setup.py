@@ -1,7 +1,7 @@
 ﻿from setuptools import setup, find_packages
 
 def read_file(path):
-  with open(path) as file:
+  with open(path, 'r', encoding='utf-8-sig') as file:
     data = file.read()
   return data
 

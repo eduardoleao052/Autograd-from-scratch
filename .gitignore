@@ -1,1 +1,4 @@
 ﻿neuralforge/__pycache__
+dist/
+build/
+neuralforge.egg-info/
