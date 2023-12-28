@@ -94,12 +94,12 @@
 ## 2. Running it Yourself
 ### Simple Autograd Example: 
 ```python
-import framework
+import neuralforge as forge
 
 # Instantiate Tensors:
-x = framework.randn((8,4,5), requires_grad = True)
-w = framework.randn((8,5,4), requires_grad = True)
-b = framework.randint((5), requires_grad = True)
+x = forge.randn((8,4,5), requires_grad = True)
+w = forge.randn((8,5,4), requires_grad = True)
+b = forge.randint((5), requires_grad = True)
 
 # Make calculations:
 x = x @ w
@@ -116,10 +116,10 @@ print(b.grad)
 
 ### Complex Autograd Example (Transformer): 
 ```python
-import framework
-import framework.nn as nn
+import neuralforge as forge
+import neuralforge.nn as nn
 
-# Implement Transformer class inheriting from framework.nn.Module:
+# Implement Transformer class inheriting from forge.nn.Module:
 class Transformer(nn.Module):
     def __init__(self, vocab_size: int, hidden_size: int, n_timesteps: int, n_heads: int, p: float):
         super().__init__()
@@ -159,7 +159,7 @@ for _ in range(n_iters):
     # Get loss:
     loss = loss_func(z, y)
 
-    # Backpropagate the loss using framework.tensor's backward() method:
+    # Backpropagate the loss using forge.tensor's backward() method:
     loss.backward()
 
     # Update the weights:
