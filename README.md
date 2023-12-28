@@ -102,7 +102,7 @@ b = framework.randint((5), requires_grad = True)
 
 # Make calculations:
 x = x @ w
-x = x + b
+x += b
 
 # Compute gradients on whole graph:
 x.backward()
