@@ -12,4 +12,4 @@ jobs:
       - uses: actions/checkout@v2 # checkout the repo
       - name: Install dependencies  # install all dependencies in requirements.txt
         run: pip install -r requirements.txt
-      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/tests/test_framework.py # run unit tests
+      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/test_framework.py # run unit tests
