@@ -6,10 +6,10 @@ on:
 
 jobs:
   test:
-    name: Test framework
+    name: Test framework # instantiate testing job
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2    # checkout the repo
-      - name: Install dependencies
+      - uses: actions/checkout@v2 # checkout the repo
+      - name: Install dependencies  # install all dependencies in requirements.txt
         run: pip install -r requirements.txt
-      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/src/test_framework.py
+      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/tests/test_framework.py # run unit tests
