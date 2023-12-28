@@ -1,4 +1,6 @@
-﻿import neuralforge as forge
+﻿import sys
+sys.path.append('..')
+import neuralforge as forge
 import neuralforge.nn as nn
 import numpy as np
 import unittest
