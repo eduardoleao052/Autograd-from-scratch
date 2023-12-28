@@ -82,13 +82,14 @@
 
 
 ## 1. Project Structure
-- `src/` : Folder with python files.
-  - `src/tensor.py`:  File with the `Tensor` class and all of the tensor `Operations`.
-  - `src/nn.py`: Most deep learning layers, and `nn.Module` class.
-  - `src/framework.py`: File with operations and helper functions.
-  - `src/test_framework.py` : File with unit tests.
-  - `src/optim.py` : File with optimizers.
+- `neuralforge/` : Framework with python files.
+  - `neuralforge/tensor_operations.py`:  File with the `Tensor` class and all of the tensor `Operations`.
+  - `neuralforge/nn.py`: Most deep learning layers, and `nn.Module` class.
+  - `neuralforge/utils.py`: File with operations and helper functions.
+  - `neuralforge/test_framework.py`: File with unit tests.
+  - `neuralforge/optim.py` : File with optimizers.
 - `data/` : Folder to store the text file used to test the Transformer. Currently holds `shakespeare.txt`.
+- `setup.py` : Setup file for the framework.
     
 ## 2. Running it Yourself
 ### Simple Autograd Example: 
