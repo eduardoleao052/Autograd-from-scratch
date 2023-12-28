@@ -1,5 +1,5 @@
 ﻿import sys
-sys.path.append('..')
+sys.path.append('../neuralforge')
 import neuralforge as forge
 import neuralforge.nn as nn
 import numpy as np
