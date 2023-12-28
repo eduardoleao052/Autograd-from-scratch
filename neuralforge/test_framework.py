@@ -1,6 +1,6 @@
-﻿import neuralforge.utils as utils
-import neuralforge.optim
-import neuralforge.nn
+﻿import utils as forge
+import optim as optim
+import nn as nn
 import numpy as np
 import unittest
 import os
@@ -17,18 +17,18 @@ class TestNeuralForge(unittest.TestCase):
         loss_func = nn.CrossEntropyLoss()
 
         # Instantiate input and output:
-        x = utils.randn((8,4,5))
+        x = forge.randn((8,4,5))
         y = np.random.randint(0,50,(8,4))
 
         # Instantiate Neural Network's Layers:
-        w1 = utils.tensor(np.random.randn(5,128) / np.sqrt(5), requires_grad=True) 
+        w1 = forge.tensor(np.random.randn(5,128) / np.sqrt(5), requires_grad=True) 
         relu1 = nn.ReLU()
-        w2 = utils.tensor(np.random.randn(128,128) / np.sqrt(128), requires_grad=True)
+        w2 = forge.tensor(np.random.randn(128,128) / np.sqrt(128), requires_grad=True)
         relu2 = nn.ReLU()
-        w3 = utils.tensor(np.random.randn(128,50) / np.sqrt(128), requires_grad=True)
+        w3 = forge.tensor(np.random.randn(128,50) / np.sqrt(128), requires_grad=True)
 
         # Training Loop:
-        for _ in range(2000):
+        for _ in range(4000):
             z = x @ w1
             z = relu1(z)
             z = z @ w2
@@ -42,9 +42,9 @@ class TestNeuralForge(unittest.TestCase):
             loss.backward()
 
             # Update the weights:
-            w1 = w1 - (w1.grad * 0.01) 
-            w2 = w2 - (w2.grad * 0.01) 
-            w3 = w3 - (w3.grad * 0.01) 
+            w1 = w1 - (w1.grad * 0.005) 
+            w2 = w2 - (w2.grad * 0.005) 
+            w3 = w3 - (w3.grad * 0.005) 
 
             # Reset the gradients to zero after each training step:
             loss.zero_grad_tree()
@@ -83,7 +83,7 @@ class TestNeuralForge(unittest.TestCase):
         optimizer = optim.Adam(model.parameters(), lr=0.01, reg=0)
 
         # Instantiate input and output:
-        x = utils.randn((8,4,5))
+        x = forge.randn((8,4,5))
         y = np.random.randint(0,50,(8,4))
 
         # Training Loop:
@@ -141,7 +141,7 @@ class TestNeuralForge(unittest.TestCase):
             input_idxs = np.stack([data[p : p + T] for p in pointers])
             target_idxs = np.stack([data[p+1: p+1 + T] for p in pointers])
 
-            return utils.tensor(input_idxs), target_idxs
+            return forge.tensor(input_idxs), target_idxs
 
         # Implement function to sample text from the model:
         def sample(model, n, n_timesteps, vocab_size, ix_to_char):
@@ -161,7 +161,7 @@ class TestNeuralForge(unittest.TestCase):
                 # Sample next index with probability:
                 idx_next = np.random.choice(range(vocab_size), p = probs._data.ravel())
 
-                idx = utils.cat((idx, utils.tensor(idx_next).reshape(1,1)), dim=1)
+                idx = forge.cat((idx, forge.tensor(idx_next).reshape(1,1)), dim=1)
                 print(''.join(ix_to_char[ix] for ix in idx._data[0]))
             # Collect all tokens sampled:
             txt = ''.join(ix_to_char[ix.item()] for ix in idx[0,-n:])
@@ -192,7 +192,7 @@ class TestNeuralForge(unittest.TestCase):
                 return z
         
         # Declare variables and hyperparameters:
-        n_iters = 50
+        n_iters = 150
         n_timesteps = 32
         hidden_size = 128
         batch_size = 4
@@ -212,7 +212,7 @@ class TestNeuralForge(unittest.TestCase):
 
         # Define loss function and optimizer:
         loss_func = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.01, reg=0)
+        optimizer = optim.Adam(model.parameters(), lr=0.005, reg=0)
         
         # Training Loop:
         for _ in range(n_iters):

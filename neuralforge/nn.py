@@ -1,7 +1,6 @@
-﻿from typing import Any
-import neuralforge.utils as utils
+﻿import utils as utils
 import numpy as np
-from neuralforge.tensor_operations import Tensor, Parameter, array
+from tensor_operations import Tensor, Parameter, array
 
 class Module:
     ''' General Module superclass'''

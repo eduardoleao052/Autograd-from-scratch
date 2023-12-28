@@ -1,4 +1,4 @@
-﻿from neuralforge.tensor_operations import *
+﻿from tensor_operations import *
 import numpy as np
 
 # Methods to iniate Tensors:
