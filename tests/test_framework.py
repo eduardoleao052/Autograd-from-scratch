@@ -1,8 +1,9 @@
-﻿import utils as forge
-import optim as optim
-import nn as nn
-import numpy as np
+﻿import sys
+sys.path.append('..')
+import neuralforge as forge
+import neuralforge.nn as nn
 import unittest
+import numpy as np
 import os
 
 class TestNeuralForge(unittest.TestCase):
@@ -80,7 +81,7 @@ class TestNeuralForge(unittest.TestCase):
 
         # Define loss function and optimizer:
         loss_func = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.01, reg=0)
+        optimizer = nn.optim.Adam(model.parameters(), lr=0.01, reg=0)
 
         # Instantiate input and output:
         x = forge.randn((8,4,5))
@@ -143,31 +144,6 @@ class TestNeuralForge(unittest.TestCase):
 
             return forge.tensor(input_idxs), target_idxs
 
-        # Implement function to sample text from the model:
-        def sample(model, n, n_timesteps, vocab_size, ix_to_char):
-            idx, y = get_batch(test_data, n_timesteps, 1)
-
-            softmax = nn.Softmax()
-
-            model.eval()
-            for _ in range(n):
-                idx_context = idx[:,-n_timesteps:]
-
-                a = model.forward(idx_context)
-                a = softmax(a, dim=-1)
-                # Get prediction:
-                probs = a[:,-1,:] # (1, T, D) -> (1, D)
-                print(probs.shape)
-                # Sample next index with probability:
-                idx_next = np.random.choice(range(vocab_size), p = probs._data.ravel())
-
-                idx = forge.cat((idx, forge.tensor(idx_next).reshape(1,1)), dim=1)
-                print(''.join(ix_to_char[ix] for ix in idx._data[0]))
-            # Collect all tokens sampled:
-            txt = ''.join(ix_to_char[ix.item()] for ix in idx[0,-n:])
-            model.train()
-            return txt
-
         # Implement dummy class inheriting from nn.Module:
         class Transformer(nn.Module):
             def __init__(self, vocab_size, hidden_size, n_timesteps, n_heads, p):
@@ -199,7 +175,8 @@ class TestNeuralForge(unittest.TestCase):
         n_heads = 8
         dropout_p = 0
 
-        PATH = os.getcwd()
+        # Get path to root of repository:
+        PATH = '/'.join(os.getcwd().split('/')[:-1])
 
         # Get tiny Shakespeare test data:
         test_data, ix_to_char, vocab_size = load_text_data(f'{PATH}/data/shakespeare.txt')
@@ -212,7 +189,7 @@ class TestNeuralForge(unittest.TestCase):
 
         # Define loss function and optimizer:
         loss_func = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.005, reg=0)
+        optimizer = nn.optim.Adam(model.parameters(), lr=0.005, reg=0)
         
         # Training Loop:
         for _ in range(n_iters):

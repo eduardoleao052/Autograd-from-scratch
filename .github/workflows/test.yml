@@ -11,5 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2 # checkout the repo
       - name: Install dependencies  # install all dependencies in requirements.txt
-        run: pip install -r requirements.txt
-      - run: python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/test_framework.py # run unit tests
+        run: |
+          pip install -r requirements.txt
+      - name: Execute tests  # execute tests in tests/
+        run: |
+          cd tests
+          python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/test_framework.py # run unit tests
+          cd ..

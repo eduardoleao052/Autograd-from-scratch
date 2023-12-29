@@ -1,6 +1,6 @@
-﻿import utils as utils
+﻿from ..tensor_operations import *
+from ..utils import *
 import numpy as np
-from tensor_operations import Tensor, Parameter, array
 
 class Module:
     ''' General Module superclass'''
@@ -53,8 +53,8 @@ class Linear(Module):
         @param bias (bool): wether to include a bias term.
         '''
         super().__init__()
-        self.W = utils.tensor(np.random.randn(in_size, out_size) / np.sqrt(in_size), requires_grad=True)
-        self.b = utils.tensor(np.zeros(out_size), requires_grad=True)
+        self.W = tensor(np.random.randn(in_size, out_size) / np.sqrt(in_size), requires_grad=True)
+        self.b = tensor(np.zeros(out_size), requires_grad=True)
         self.has_bias = bias
 
     def forward(self, x):
@@ -135,7 +135,7 @@ class Embedding(Module):
         '''
         super().__init__()
         
-        self.E = utils.tensor(np.random.randn(in_size, embed_size) / np.sqrt(in_size), requires_grad=True)
+        self.E = tensor(np.random.randn(in_size, embed_size) / np.sqrt(in_size), requires_grad=True)
 
 
     def forward(self, idx):
@@ -154,7 +154,7 @@ class PositionalEmbedding(Module):
         @param embed_size (int): size of the embedding vector generated.
         '''
         super().__init__()
-        self.E = utils.tensor(np.random.randn(n_timesteps, embed_size) / np.sqrt(n_timesteps), requires_grad=True)
+        self.E = tensor(np.random.randn(n_timesteps, embed_size) / np.sqrt(n_timesteps), requires_grad=True)
 
 
     def forward(self, x):
@@ -177,7 +177,7 @@ class Dropout(Module):
     def forward(self,z):
         if self.mode == 'eval':
             return z
-        mask = utils.rand(z.shape) > self.p
+        mask = rand(z.shape) > self.p
         a = z.masked_fill(mask==False, 0) 
         a = a / (1 - self.p)
         return a
@@ -190,14 +190,14 @@ class LayerNorm(Module):
         @param n_embed (float): size of the last dimention of the imput.
         '''
         super().__init__()
-        self.gamma = utils.ones([1, n_embed], requires_grad=True)
-        self.beta = utils.zeros([1, n_embed], requires_grad=True)
+        self.gamma = ones([1, n_embed], requires_grad=True)
+        self.beta = zeros([1, n_embed], requires_grad=True)
     
 
     def forward(self,x):
-        var = utils.var(x, dim=-1, keepdims=True) # (B, T)
-        norm = (x - utils.mean(x, dim=-1, keepdims=True)) / utils.sqrt(var) # (B, T, D)
-        z = norm * self.gamma + self.beta # (B, T, D)
+        var_x = var(x, dim=-1, keepdims=True) # (B, T)
+        norm_x = (x - mean(x, dim=-1, keepdims=True)) / sqrt(var_x) # (B, T, D)
+        z = norm_x * self.gamma + self.beta # (B, T, D)
         return z
 
 # Non-Linearity Layers:
@@ -207,7 +207,7 @@ class ReLU(Module):
         super().__init__()
 
     def forward(self, z):
-        mask = utils.Tensor(np.where(z._data < 0, 0, 1))
+        mask = Tensor(np.where(z._data < 0, 0, 1))
         z = z * mask
         return z
 
@@ -224,8 +224,8 @@ class Softmax(Module):
         return self.forward(x, dim)
 
     def forward(self, z, dim=-1):
-        z = utils.exp(z)
-        out = z / utils.sum(z, dim=dim, keepdims=True)
+        z = exp(z)
+        out = z / sum(z, dim=dim, keepdims=True)
         return out
 
 
@@ -235,8 +235,8 @@ class Tanh(Module):
         super().__init__()
 
     def forward(self, z):
-        z = utils.exp(z)
-        z_neg = utils.exp(-z)
+        z = exp(z)
+        z_neg = exp(-z)
         out = (z - z_neg) / (z + z_neg)
         return out
 
@@ -309,12 +309,12 @@ class CrossEntropyLoss(Module):
         B = np.prod(B_dims)
         z = z.reshape(B,D)
         
-        logits = utils.exp(z)
-        logits = logits / utils.sum(logits, dim= 1, keepdims=True)
+        logits = exp(z)
+        logits = logits / sum(logits, dim= 1, keepdims=True)
 
         y = array(y).reshape(B)
             
         # get cross-entropy loss:
-        log_losses = utils.log(logits[np.arange(B), y])
-        loss = -utils.sum(log_losses) / (B)
+        log_losses = log(logits[np.arange(B), y])
+        loss = -sum(log_losses) / (B)
         return loss
