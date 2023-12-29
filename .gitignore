@@ -2,3 +2,4 @@
 dist/
 build/
 neuralforge.egg-info/
+neuralforge/nn/__pycache__
