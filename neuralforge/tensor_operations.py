@@ -208,10 +208,14 @@ class Add:
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
-
+      
+        # Get new Tensor's data:
         data = a._data + b._data
-        
+      
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a, b)
         a.children.append(z)
         b.children.append(z)
@@ -221,10 +225,10 @@ class Add:
     
     def backward(self, dz, z):
         a, b = self.cache
-        da, db = dz, dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
+            da = dz
             grad_dim = len(dz.shape)
             in_dim = len(a.shape)
             for _ in range(grad_dim - in_dim):
@@ -237,6 +241,7 @@ class Add:
 
         # Find gradients relative to "b", and make recursive calls if it requires gradients:
         if b.requires_grad:
+            db = dz
             grad_dim = len(dz.shape)
             in_dim = len(b.shape)
             for _ in range(grad_dim - in_dim):
@@ -253,9 +258,14 @@ class Neg:
 
     def forward(self, a):
         requires_grad = a.requires_grad
+   
+        # Get new Tensor's data:
         data = - a._data 
-
+   
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+   
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
 
@@ -265,7 +275,6 @@ class Neg:
     
     def backward(self, dz, z):
         a = self.cache
-        da = 0
 
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -278,10 +287,14 @@ class Mul:
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
-
+       
+        # Get new Tensor's data:
         data = a._data * b._data
-        
+       
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a, b)
         a.children.append(z)
         b.children.append(z)
@@ -291,7 +304,6 @@ class Mul:
     
     def backward(self, dz, z):
         a, b = self.cache
-        da, db = dz, dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -325,10 +337,14 @@ class Div:
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
-
+       
+        # Get new Tensor's data:
         data = a._data / b._data
-        
+       
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a, b)
         a.children.append(z)
         b.children.append(z)
@@ -338,7 +354,6 @@ class Div:
     
     def backward(self, dz, z):
         a, b = self.cache
-        da, db = dz, dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -372,9 +387,14 @@ class MatMul:
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
+     
+        # Get new Tensor's data:
         data = a._data @ b._data
-
+      
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a, b)
         a.children.append(z)
         b.children.append(z)
@@ -384,7 +404,6 @@ class MatMul:
     
     def backward(self, dz, z):
         a, b = self.cache
-        da, db = dz, dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -394,12 +413,10 @@ class MatMul:
             # Get difference between "a" size and upstream "da" size, to broadcast grad into "a":
             in_dim = len(a.shape)
             grad_dim = len(da.shape)
-            # print("DA")
-            # print(da.shape)
+
             for _ in range(grad_dim - in_dim):
                 da = da.sum(axis=0)
-            # print("DA2")
-            # print(da.shape)
+
             a.backward(da, z)
 
         # Find gradients relative to "b", and make recursive calls if it requires gradients:
@@ -410,12 +427,10 @@ class MatMul:
             in_dim = len(b.shape)
             grad_dim = len(db.shape)
 
-            # print("DB")
-            # print(db)
+
             for _ in range(grad_dim - in_dim):
                 db = db.sum(axis=0)
-            # print("DB2")
-            # print(db)
+
             b.backward(db, z)
 
 # Statistics operations:
@@ -425,23 +440,28 @@ class Max:
 
     def forward(self, a, dim, keepdims=False):
         requires_grad = a.requires_grad
+      
+        # Get new Tensor's data:
         data = np.max(a._data, axis=dim, keepdims=keepdims)
         if keepdims:
             data = np.ones(a.shape) * data
 
-
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+     
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
-        self.cache = (a, data, dim, keepdims)
+        self.cache = (a, data, dim)
 
         return z
     
     def backward(self, dz, z):
-        a, data, dim, keepdims =  self.cache
-        da = dz
+        a, data, dim =  self.cache
+
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
+            da = dz
             if a.shape != da.shape:
                 # Brodcast upstream derivative to the size of "a":
                 da = np.expand_dims(da, axis=dim)
@@ -458,10 +478,14 @@ class Sum:
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
-
+     
+        # Get new Tensor's data:
         data = a._data.sum(axis=dim, keepdims=keepdims)
-        
+     
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a)
@@ -470,7 +494,6 @@ class Sum:
     
     def backward(self, dz, z):
         a =  self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -483,10 +506,14 @@ class Mean:
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
-
+    
+        # Get new Tensor's data:
         data = a._data.mean(axis=dim, keepdims=keepdims)
-        
+      
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, dim)
@@ -495,7 +522,6 @@ class Mean:
     
     def backward(self, dz, z):
         a, dim =  self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -509,10 +535,14 @@ class Var:
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
-
+     
+        # Get new Tensor's data:
         data = a._data.var(axis=dim, keepdims=keepdims)
-        
+      
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, dim)
@@ -521,7 +551,6 @@ class Var:
     
     def backward(self, dz, z):
         a, dim =  self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -536,10 +565,14 @@ class Exp:
 
     def forward(self, a):
         requires_grad = a.requires_grad
-
+       
+        # Get new Tensor's data:
         data = np.exp(a._data)
-        
+       
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, data)
@@ -548,7 +581,6 @@ class Exp:
     
     def backward(self, dz, z):
         a, data = self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -561,10 +593,14 @@ class Log:
 
     def forward(self, a):
         requires_grad = a.requires_grad
-
+     
+        # Get new Tensor's data:
         data = np.log(a._data)
-        
+     
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a)
@@ -573,7 +609,6 @@ class Log:
     
     def backward(self, dz, z):
         a = self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -586,10 +621,14 @@ class Sqrt:
 
     def forward(self, a):
         requires_grad = a.requires_grad
-
+     
+        # Get new Tensor's data:
         data = np.sqrt(a._data)
-        
+     
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+     
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, data)
@@ -598,7 +637,6 @@ class Sqrt:
     
     def backward(self, dz, z):
         a, data = self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
@@ -612,10 +650,14 @@ class Reshape:
 
     def forward(self, a, shape):
         requires_grad = a.requires_grad
-
+      
+        # Get new Tensor's data:
         data = a._data.reshape(*shape)
-
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self)
+      
+        # Add new Tensors to "children" and old Tensors to "parents": 
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a)
@@ -638,10 +680,14 @@ class Transpose:
 
     def forward(self, a, *dims):
         requires_grad = a.requires_grad
-        
+       
+        # Get new Tensor's data:
         data = a._data.swapaxes(*dims)
-
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self)
+       
+        # Add new Tensors to "children" and old Tensors to "parents": 
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, dims)
@@ -668,10 +714,14 @@ class Cat:
         for tensor in tensors:
             if tensor.requires_grad == True:
                 requires_grad = True
-        print(tensors[0]._data.shape)
+    
+        # Get new Tensor's data:
         data = np.concatenate([tensor._data for tensor in tensors], axis=dim)
-        print(data.shape)
+    
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+    
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = tensors
         for tensor in tensors:
             tensor.children.append(z)
@@ -698,14 +748,19 @@ class Stack:
 
     def forward(self, tensors: tuple, dim: int):
 
+        # Verify if any original tensors requires grad:
         requires_grad = False
         for tensor in tensors:
             if tensor.requires_grad == True:
                 requires_grad = True
-        print(tensors[0]._data.shape)
+       
+        # Get new Tensor's data:
         data = np.stack([tensor._data for tensor in tensors], axis=dim)
-        print(data.shape)
+       
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = tensors
         for tensor in tensors:
             tensor.children.append(z)
@@ -715,13 +770,13 @@ class Stack:
     
     def backward(self, dz, z):
         tensors, dim = self.cache
-        print(dz.shape)
+
         dz = np.split(dz, len(tensors), dim)
-        print(len(dz))
+
         # Find gradients relative to each tensor in "tensor", and make recursive calls if it requires gradients:
         for i, tensor in enumerate(tensors):
             if tensor.requires_grad:
-
+                # For every tensor that generated the stack, get gradients relative to that part of "dz": 
                 di = dz[i].reshape(tensor._data.shape)
     
                 tensor.backward(di, z)
@@ -732,11 +787,14 @@ class MaskedFill:
 
     def forward(self, a, condition, value):
         requires_grad = a.requires_grad
-
+      
+        # Get new Tensor's data:
         data = np.where(condition, a._data, value)
-
-
+      
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a)
@@ -748,7 +806,7 @@ class MaskedFill:
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
-
+            # Because some activations are just set to a value, this operation is not differentiable.
             da = dz
  
             a.backward(da, z)
@@ -759,10 +817,14 @@ class Slice:
 
     def forward(self, a, index):
         requires_grad = a.requires_grad
-
+      
+        # Get new Tensor's data:
         data = a._data[index]
-
+       
+        # Create new Tensor:
         z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
         self.cache = (a, index)
@@ -771,10 +833,10 @@ class Slice:
     
     def backward(self, dz, z):
         a, index =  self.cache
-        da = dz
         
         # Find gradients relative to "a", and make recursive calls if it requires gradients:
         if a.requires_grad:
+            # Add upstream gradients to [index] part of da.
             da = np.zeros_like(a._data)
             da[index] = dz
             a.backward(da, z)
