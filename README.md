@@ -168,7 +168,7 @@ for _ in range(n_iters):
     # Reset the gradients to zero after each training step:
     optimizer.zero_grad()
 ```
-> **Note:** You can use the framework locally running on the terminal: `pip install neuralforge`
+> **Note:** You can install the framework locally with: `pip install neuralforge`
 <details>
 <summary> <b> Requirements </b> </summary>
 
