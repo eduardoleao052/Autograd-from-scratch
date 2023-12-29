@@ -84,11 +84,13 @@
 ## 1. Project Structure
 - `neuralforge/` : Framework with python files.
   - `neuralforge/tensor_operations.py`:  File with the `Tensor` class and all of the tensor `Operations`.
-  - `neuralforge/nn.py`: Most deep learning layers, and `nn.Module` class.
   - `neuralforge/utils.py`: File with operations and helper functions.
-  - `neuralforge/test_framework.py`: File with unit tests.
-  - `neuralforge/optim.py` : File with optimizers.
+  - `neuralforge/nn/`: Submodule of the framework. Contains full layers and optimizers.
+      - `neuralforge/nn/nn.py`: Most deep learning layers, and `nn.Module` class.
+      - `neuralforge/nn/optim.py` : File with optimizers.
 - `data/` : Folder to store the text file used to test the Transformer. Currently holds `shakespeare.txt`.
+- `test/`: Folder with unit tests.
+  - `test/test_framework.py`: File with unit tests.
 - `setup.py` : Setup file for the framework.
     
 ## 2. Running it Yourself
