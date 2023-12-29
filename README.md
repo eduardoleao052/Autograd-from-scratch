@@ -223,7 +223,7 @@ pip install -r requirements.txt
 </details>
 
 ## 3. Results
-- The models implemented in [test_framework.py](src/test_framework.py) all converged to __near-zero losses__.
+- The models implemented in [test_framework.py](tests/test_framework.py) all converged to __near-zero losses__.
 - This framework is not as fast or as optimized as PyTorch, but I tried making it more interpretable.
 - Hope you enjoy!
 
