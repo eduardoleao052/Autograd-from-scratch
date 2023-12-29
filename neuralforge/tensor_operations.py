@@ -226,9 +226,11 @@ class Add:
     def backward(self, dz, z):
         a, b = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
             da = dz
+
+            # Rescale gradient to have the same shape as "a":
             grad_dim = len(dz.shape)
             in_dim = len(a.shape)
             for _ in range(grad_dim - in_dim):
@@ -239,9 +241,11 @@ class Add:
                     da = da.sum(axis=n, keepdims=True)
             a.backward(da, z)
 
-        # Find gradients relative to "b", and make recursive calls if it requires gradients:
+        # Find gradients relative to "b", and pass it downstream:
         if b.requires_grad:
             db = dz
+
+            # Rescale gradient to have the same shape as "b":
             grad_dim = len(dz.shape)
             in_dim = len(b.shape)
             for _ in range(grad_dim - in_dim):
@@ -276,7 +280,7 @@ class Neg:
     def backward(self, dz, z):
         a = self.cache
 
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
             da = -dz
             a.backward(da, z)
@@ -305,9 +309,12 @@ class Mul:
     def backward(self, dz, z):
         a, b = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # d/da(a*b) = b, apply chain rule:
             da = dz * b._data
+
+            # Rescale gradient to have the same shape as "a":
             grad_dim = len(dz.shape)
             in_dim = len(a.shape)
             for _ in range(grad_dim - in_dim):
@@ -318,9 +325,12 @@ class Mul:
                     da = da.sum(axis=n, keepdims=True)
             a.backward(da, z)
 
-        # Find gradients relative to "b", and make recursive calls if it requires gradients:
+        # Find gradients relative to "b", and pass it downstream:
         if b.requires_grad:
+            # d/db(a*b) = a, apply chain rule:
             db = dz * a._data
+
+            # Rescale gradient to have the same shape as "b":
             grad_dim = len(dz.shape)
             in_dim = len(b.shape)
             for _ in range(grad_dim - in_dim):
@@ -355,9 +365,12 @@ class Div:
     def backward(self, dz, z):
         a, b = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            da = dz / b._data
+            # d/da(a/b) = (1/b), apply chain rule:
+            da = dz * (1 / b._data)
+
+            # Rescale gradient to have the same shape as "a":
             grad_dim = len(dz.shape)
             in_dim = len(a.shape)
             for _ in range(grad_dim - in_dim):
@@ -368,9 +381,12 @@ class Div:
                     da = da.sum(axis=n, keepdims=True)
             a.backward(da, z)
 
-        # Find gradients relative to "b", and make recursive calls if it requires gradients:
+        # Find gradients relative to "b", and pass it downstream:
         if b.requires_grad:
+            # d/db(a/b) = -(a/b^2), apply chain rule:
             db = - dz * a._data / (b._data ** 2)
+
+            # Rescale gradient to have the same shape as "b":
             grad_dim = len(dz.shape)
             in_dim = len(b.shape)
             for _ in range(grad_dim - in_dim):
@@ -405,9 +421,9 @@ class MatMul:
     def backward(self, dz, z):
         a, b = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            # Transpose the last 2 dimentions:
+            # Backprop through the matmul:
             da = dz @ b._data.swapaxes(-1,-2)
             
             # Get difference between "a" size and upstream "da" size, to broadcast grad into "a":
@@ -419,8 +435,9 @@ class MatMul:
 
             a.backward(da, z)
 
-        # Find gradients relative to "b", and make recursive calls if it requires gradients:
+        # Find gradients relative to "b", and pass it downstream:
         if b.requires_grad:
+            # Backprop through the matmul:
             db = a._data.swapaxes(-1,-2) @ dz
 
             # Get difference between "b" size and upstream "db" size, to broadcast grad into "b":
@@ -459,17 +476,17 @@ class Max:
     def backward(self, dz, z):
         a, data, dim =  self.cache
 
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            da = dz
             if a.shape != da.shape:
                 # Brodcast upstream derivative to the size of "a":
-                da = np.expand_dims(da, axis=dim)
-                da = da * np.ones_like(a._data)
+                dz = np.expand_dims(dz, axis=dim)
+                dz = dz * np.ones_like(a._data)
                 # Brodcast upstream output (max) to the size of "a":
                 max = np.expand_dims(data, axis=dim)
                 max = max * np.ones_like(a._data)
-            da = da * np.equal(a._data, max)
+            # Add upstream gradients to the [max] values:
+            da = dz * np.equal(a._data, max)
             a.backward(da, z)
        
 class Sum:
@@ -495,8 +512,9 @@ class Sum:
     def backward(self, dz, z):
         a =  self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # Expand upstream gradients to the shape of "a":
             da = np.ones(a.shape) * dz
             a.backward(da, z)
 
@@ -523,8 +541,9 @@ class Mean:
     def backward(self, dz, z):
         a, dim =  self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # Propagate through the mean(x) operation:
             da = np.ones(a.shape) * dz
             da /= np.prod(np.array(a.shape)[dim])
             a.backward(da, z)
@@ -552,8 +571,9 @@ class Var:
     def backward(self, dz, z):
         a, dim =  self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # Propagate through the var(x) operation:
             da = np.ones(a.shape) * dz
             da = da * 2 * (a._data - a._data.mean(axis=dim, keepdims=True)) / np.prod(np.array(a.shape)[dim])
             a.backward(da, z)
@@ -582,8 +602,9 @@ class Exp:
     def backward(self, dz, z):
         a, data = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # d/da(e^a) = e^a, apply the chain rule to the derivative of e^a:
             da = data * dz
             a.backward(da, z)
 
@@ -610,8 +631,9 @@ class Log:
     def backward(self, dz, z):
         a = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # d/da(ln(a)) = (1/a), apply the chain rule to the derivative of the natural log:
             da = (1 / a._data) * dz
             a.backward(da, z)
 
@@ -638,8 +660,9 @@ class Sqrt:
     def backward(self, dz, z):
         a, data = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
+            # d/dx(sqrt(a)) = (1/2) * (1/a), apply the chain rule to the derivative of the square root:
             da = (1 / 2) * (1 / data) * dz
             a.backward(da, z)
 
@@ -667,9 +690,9 @@ class Reshape:
     def backward(self, dz, z):
         a = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-
+            # Reshape upstream gradients:
             da = dz.reshape(a.shape)
  
             a.backward(da, z)
@@ -697,9 +720,9 @@ class Transpose:
     def backward(self, dz, z):
         a, dims = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-
+            # Transpose upstream gradients:
             da = dz.swapaxes(*dims)
  
             a.backward(da, z)
@@ -734,10 +757,10 @@ class Cat:
         
         dz = np.split(dz, len(tensors), dim)
 
-        # Find gradients relative to each tensor in "tensor", and make recursive calls if it requires gradients:
+        # Find gradients relative to each tensor in "tensor", and pass it downstream:
         for i, tensor in enumerate(tensors):
             if tensor.requires_grad:
-
+                # For every tensor that generated the output, get gradients relative to that part of "dz": 
                 di = dz[i]
     
                 tensor.backward(di, z)
@@ -773,7 +796,7 @@ class Stack:
 
         dz = np.split(dz, len(tensors), dim)
 
-        # Find gradients relative to each tensor in "tensor", and make recursive calls if it requires gradients:
+        # Find gradients relative to each tensor in "tensor", and pass it downstream:
         for i, tensor in enumerate(tensors):
             if tensor.requires_grad:
                 # For every tensor that generated the stack, get gradients relative to that part of "dz": 
@@ -804,7 +827,7 @@ class MaskedFill:
     def backward(self, dz, z):
         a = self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
             # Because some activations are just set to a value, this operation is not differentiable.
             da = dz
@@ -834,7 +857,7 @@ class Slice:
     def backward(self, dz, z):
         a, index =  self.cache
         
-        # Find gradients relative to "a", and make recursive calls if it requires gradients:
+        # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
             # Add upstream gradients to [index] part of da.
             da = np.zeros_like(a._data)
