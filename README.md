@@ -181,6 +181,7 @@ pip install -r requirements.txt
 ```
 > **Note:** The framework is built around numpy, so there is no CUDA availability.
 
+<br/>
 
 </details>
 <details>
@@ -215,6 +216,9 @@ pip install -r requirements.txt
 ```
 
 </details>
+
+<br/>
+
 </details>
 
 ## 3. Results
