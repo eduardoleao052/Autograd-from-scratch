@@ -170,7 +170,7 @@ for _ in range(n_iters):
 ```
 > **Note:** You can use the framework locally running on the terminal: `pip install neuralforge`
 <details>
-<summary> <h3> Requirements </h3> </summary>
+<summary> <b> Requirements </b> </summary>
   
 - The required packages are listed in `requirements.txt`.
 - The requirements can be installed on a virtual environment with the command:
@@ -182,7 +182,7 @@ pip install -r requirements.txt
 
 </details>
 <details>
-<summary> <h3> Build a Custom Model </h3> </summary>
+<summary> <b> Build a Custom Model </b> </summary>
   
 - To create a custom model class, you can use the exact same syntax as you would in PyTorch, inheriting from nn.Module.
 <details>
