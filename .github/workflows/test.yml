@@ -18,5 +18,5 @@ jobs:
           cd tests
           pwd
           ls
-          python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/tests/test_framework.py
+          python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/tests/test_framework.py
           cd ..
