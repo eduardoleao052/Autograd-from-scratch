@@ -16,5 +16,5 @@ jobs:
       - name: Execute tests  # execute tests in tests/
         run: |
           cd tests
-          python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/test_framework.py # run unit tests
+          python /home/runner/work/Autograd-from-scratch/Autograd-from-scratch/neuralforge/tests/test_framework.py # run unit tests
           cd ..
