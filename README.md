@@ -88,7 +88,7 @@
   - `neuralforge/nn/`: Submodule of the framework. Contains full layers and optimizers.
       - `neuralforge/nn/nn.py`: Most deep learning layers, and `nn.Module` class.
       - `neuralforge/nn/optim.py` : File with optimizers.
-- `data/` : Folder to store the text file used to test the Transformer. Currently holds `shakespeare.txt`.
+- `data/` : Folder to store training data. Currently holds `shakespeare.txt`.
 - `test/`: Folder with unit tests. Contains `test_framework.py`.
 - `setup.py` : Setup file for the framework.
     
