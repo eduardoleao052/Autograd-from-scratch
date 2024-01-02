@@ -67,12 +67,12 @@
 <br/>
 
 
-- [Reshape]()
-- [Transpose]()
-- [Concatenate]()
-- [Stack]()
-- [MaskedFill]()
-- [Slice]()
+- [Reshape](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L682-L710)
+- [Transpose](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L713-L741)
+- [Concatenate](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L744-L780)
+- [Stack](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L783-L820)
+- [MaskedFill](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L823-L851)
+- [Slice](https://github.com/eduardoleao052/Autograd-from-scratch/blob/4b7083149a8dd8e9bdb2b0c93fe130d9be516bf0/neuralforge/tensor_operations.py#L854-L882)
 
 <br/>
 
