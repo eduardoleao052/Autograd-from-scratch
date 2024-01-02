@@ -103,11 +103,11 @@ w = forge.randn((8,5,4), requires_grad = True)
 b = forge.randint((5), requires_grad = True)
 
 # Make calculations:
-x = x @ w
-x += b
+out = x @ w
+out += b
 
 # Compute gradients on whole graph:
-x.backward()
+out.backward()
 
 # Get gradients from specific Tensors:
 print(w.grad)
