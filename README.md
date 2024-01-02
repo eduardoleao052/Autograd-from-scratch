@@ -194,6 +194,7 @@ pip install -r requirements.txt
 <details>
 <summary> You may chose among <b>the following layers</b>: </summary>
 
+<br/>
 
 - nn.Embedding (first layer, turns input indexes into vectors)
 - nn.PositionalEmbedding (second layer, adds position information to every timestep of the input)
@@ -206,6 +207,7 @@ pip install -r requirements.txt
 <details>
 <summary> And <b>the following functions</b>: </summary>
 
+<br/>
 
 - nn.Dropout (can be added to apply dropout)
 - nn.LayerNorm (normalizes the tensors)
