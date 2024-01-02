@@ -33,10 +33,10 @@
 - [Subtraction](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L259-L286)
 - [Multiplication](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L288-L342)
 - [Division](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L400-L451)
-- [Matrix multiplication]
-- [Exponentiation]
-- [Log]
-- [Square Root]
+- [Matrix multiplication](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L454-L490)
+- [Exponentiation](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L582-L609)
+- [Log](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L611-L638)
+- [Square Root](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L640-L667)
 
 <br/>
   
@@ -50,10 +50,10 @@
 <br/>
 
 
-- Sum
-- Mean
-- Max
-- Variance
+- [Sum](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L492-L519)
+- [Mean](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L521-L549)
+- [Max](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L454-L490)
+- [Variance](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L551-L579)
 
 <br/>
 
@@ -67,12 +67,12 @@
 <br/>
 
 
-- Reshape
-- Transpose
-- Concatenate
-- Stack
-- MaskedFill
-- Slice
+- [Reshape]()
+- [Transpose]()
+- [Concatenate]()
+- [Stack]()
+- [MaskedFill]()
+- [Slice]()
 
 <br/>
 
