@@ -29,14 +29,14 @@
 <br/>
 
 
-- Addition
-- Subtraction
-- Multiplication
-- Division
-- Matrix multiplication
-- Exponentiation
-- Log
-- Square Root
+- [Addition](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L205-L257)
+- [Subtraction](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L259-L286)
+- [Multiplication](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L288-L342)
+- [Division]
+- [Matrix multiplication]
+- [Exponentiation]
+- [Log]
+- [Square Root]
 
 <br/>
   
