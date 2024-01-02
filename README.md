@@ -98,7 +98,7 @@
 import neuralforge as forge
 
 # Instantiate Tensors:
-x = forge.randn((8,4,5), requires_grad = True)
+x = forge.randn((8,4,5))
 w = forge.randn((8,5,4), requires_grad = True)
 b = forge.randint((5), requires_grad = True)
 
