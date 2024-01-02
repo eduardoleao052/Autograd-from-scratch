@@ -196,12 +196,12 @@ pip install -r requirements.txt
 
 <br/>
 
-- nn.Embedding (first layer, turns input indexes into vectors)
-- nn.PositionalEmbedding (second layer, adds position information to every timestep of the input)
-- nn.Linear (simple fully-connected layer)
-- nn.MultiHeadSelfAttention (core of the transformer, calculates weighted sum of inputs)
-- nn.Block (full transformer block - Contains MHSA, Linear and LayerNorm layers)
-- nn.CrossEntropyLoss (last layer, returns probabilities for next generated character)
+- [nn.Embedding](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L129-L146) (first layer, turns input indexes into vectors)
+- [nn.PositionalEmbedding](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L149-L164) (second layer, adds position information to every timestep of the input)
+- [nn.Linear](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L47-L64) (simple fully-connected layer)
+- [nn.MultiHeadSelfAttention](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L67-L126) (core of the transformer, calculates weighted sum of inputs)
+- [nn.Block](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L268-L287) (full transformer block - Contains MHSA, Linear and LayerNorm layers)
+- [nn.CrossEntropyLoss](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L290-L320) (last layer, returns probabilities for next generated character)
 
 </details>
 <details>
@@ -209,11 +209,11 @@ pip install -r requirements.txt
 
 <br/>
 
-- nn.Dropout (can be added to apply dropout)
-- nn.LayerNorm (normalizes the tensors)
-- nn.Softmax (scales the values between 0 and 1)
-- nn.Tanh (scales the values between -1 and 1)
-- nn.Relu (zeroes all negative values)
+- [nn.Dropout](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L167-L183) (can be added to apply dropout)
+- [nn.LayerNorm](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L186-L201) (normalizes the tensors)
+- [nn.Softmax](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L215-L229) (scales the values between 0 and 1)
+- [nn.Tanh](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L232-L241) (scales the values between -1 and 1)
+- [nn.Relu](https://github.com/eduardoleao052/Autograd-from-scratch/blob/e7569075cb3342300274839bcf4edd8ba19a1c08/neuralforge/nn/layers.py#L204-L212) (zeroes all negative values)
 
 </details>
 
