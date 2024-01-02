@@ -256,6 +256,7 @@ class Add:
                     db = db.sum(axis=n, keepdims=True)
             b.backward(db, z)
 
+
 class Neg:
     def __init__(self) -> None:
         pass
@@ -284,6 +285,7 @@ class Neg:
         if a.requires_grad:
             da = -dz
             a.backward(da, z)
+
 
 class Mul:
     def __init__(self) -> None:
@@ -341,6 +343,7 @@ class Mul:
                     db = db.sum(axis=n, keepdims=True)
             b.backward(db, z)
 
+
 class Div:
     def __init__(self) -> None:
         pass
@@ -361,6 +364,7 @@ class Div:
         self.cache = (a, b)
 
         return z  
+
     
     def backward(self, dz, z):
         a, b = self.cache
@@ -396,6 +400,7 @@ class Div:
                 if dim == 1:
                     db = db.sum(axis=n, keepdims=True)
             b.backward(db, z)
+
 
 class MatMul:
     def __init__(self) -> None:
@@ -450,7 +455,159 @@ class MatMul:
 
             b.backward(db, z)
 
+
+# Element-wise operations:
+class Exp:
+    def __init__(self) -> None:
+        pass
+
+    def forward(self, a):
+        requires_grad = a.requires_grad
+       
+        # Get new Tensor's data:
+        data = np.exp(a._data)
+       
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
+        self.parents = (a,)
+        a.children.append(z)
+        self.cache = (a, data)
+
+        return z
+    
+    def backward(self, dz, z):
+        a, data = self.cache
+        
+        # Find gradients relative to "a", and pass it downstream:
+        if a.requires_grad:
+            # d/da(e^a) = e^a, apply the chain rule to the derivative of e^a:
+            da = data * dz
+            a.backward(da, z)
+
+
+class Log:
+    def __init__(self) -> None:
+        pass
+
+    def forward(self, a):
+        requires_grad = a.requires_grad
+     
+        # Get new Tensor's data:
+        data = np.log(a._data)
+     
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
+        self.parents = (a,)
+        a.children.append(z)
+        self.cache = (a)
+
+        return z
+    
+    def backward(self, dz, z):
+        a = self.cache
+        
+        # Find gradients relative to "a", and pass it downstream:
+        if a.requires_grad:
+            # d/da(ln(a)) = (1/a), apply the chain rule to the derivative of the natural log:
+            da = (1 / a._data) * dz
+            a.backward(da, z)
+
+
+class Sqrt:
+    def __init__(self) -> None:
+        pass
+
+    def forward(self, a):
+        requires_grad = a.requires_grad
+     
+        # Get new Tensor's data:
+        data = np.sqrt(a._data)
+     
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+     
+        # Add new Tensors to "children" and old Tensors to "parents":
+        self.parents = (a,)
+        a.children.append(z)
+        self.cache = (a, data)
+
+        return z
+    
+    def backward(self, dz, z):
+        a, data = self.cache
+        
+        # Find gradients relative to "a", and pass it downstream:
+        if a.requires_grad:
+            # d/dx(sqrt(a)) = (1/2) * (1/a), apply the chain rule to the derivative of the square root:
+            da = (1 / 2) * (1 / data) * dz
+            a.backward(da, z)
+
 # Statistics operations:
+class Sum:
+    def __init__(self) -> None:
+        pass
+
+    def forward(self, a, dim, keepdims):
+        requires_grad = a.requires_grad
+     
+        # Get new Tensor's data:
+        data = a._data.sum(axis=dim, keepdims=keepdims)
+     
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+      
+        # Add new Tensors to "children" and old Tensors to "parents":
+        self.parents = (a,)
+        a.children.append(z)
+        self.cache = (a)
+
+        return z
+    
+    def backward(self, dz, z):
+        a =  self.cache
+        
+        # Find gradients relative to "a", and pass it downstream:
+        if a.requires_grad:
+            # Expand upstream gradients to the shape of "a":
+            da = np.ones(a.shape) * dz
+            a.backward(da, z)
+
+
+class Mean:
+    def __init__(self) -> None:
+        pass
+
+    def forward(self, a, dim, keepdims):
+        requires_grad = a.requires_grad
+    
+        # Get new Tensor's data:
+        data = a._data.mean(axis=dim, keepdims=keepdims)
+      
+        # Create new Tensor:
+        z = Tensor(data, requires_grad=requires_grad, operation=self) 
+       
+        # Add new Tensors to "children" and old Tensors to "parents":
+        self.parents = (a,)
+        a.children.append(z)
+        self.cache = (a, dim)
+
+        return z
+    
+    def backward(self, dz, z):
+        a, dim =  self.cache
+        
+        # Find gradients relative to "a", and pass it downstream:
+        if a.requires_grad:
+            # Propagate through the mean(x) operation:
+            da = np.ones(a.shape) * dz
+            da /= np.prod(np.array(a.shape)[dim])
+            a.backward(da, z)
+
+
 class Max:
     def __init__(self) -> None:
         pass
@@ -488,65 +645,7 @@ class Max:
             # Add upstream gradients to the [max] values:
             da = dz * np.equal(a._data, max)
             a.backward(da, z)
-       
-class Sum:
-    def __init__(self) -> None:
-        pass
-
-    def forward(self, a, dim, keepdims):
-        requires_grad = a.requires_grad
-     
-        # Get new Tensor's data:
-        data = a._data.sum(axis=dim, keepdims=keepdims)
-     
-        # Create new Tensor:
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
-      
-        # Add new Tensors to "children" and old Tensors to "parents":
-        self.parents = (a,)
-        a.children.append(z)
-        self.cache = (a)
-
-        return z
-    
-    def backward(self, dz, z):
-        a =  self.cache
-        
-        # Find gradients relative to "a", and pass it downstream:
-        if a.requires_grad:
-            # Expand upstream gradients to the shape of "a":
-            da = np.ones(a.shape) * dz
-            a.backward(da, z)
-
-class Mean:
-    def __init__(self) -> None:
-        pass
-
-    def forward(self, a, dim, keepdims):
-        requires_grad = a.requires_grad
-    
-        # Get new Tensor's data:
-        data = a._data.mean(axis=dim, keepdims=keepdims)
-      
-        # Create new Tensor:
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
-       
-        # Add new Tensors to "children" and old Tensors to "parents":
-        self.parents = (a,)
-        a.children.append(z)
-        self.cache = (a, dim)
-
-        return z
-    
-    def backward(self, dz, z):
-        a, dim =  self.cache
-        
-        # Find gradients relative to "a", and pass it downstream:
-        if a.requires_grad:
-            # Propagate through the mean(x) operation:
-            da = np.ones(a.shape) * dz
-            da /= np.prod(np.array(a.shape)[dim])
-            a.backward(da, z)
+            
 
 class Var:
     def __init__(self) -> None:
@@ -578,93 +677,6 @@ class Var:
             da = da * 2 * (a._data - a._data.mean(axis=dim, keepdims=True)) / np.prod(np.array(a.shape)[dim])
             a.backward(da, z)
 
-# Element-wise operations:
-class Exp:
-    def __init__(self) -> None:
-        pass
-
-    def forward(self, a):
-        requires_grad = a.requires_grad
-       
-        # Get new Tensor's data:
-        data = np.exp(a._data)
-       
-        # Create new Tensor:
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
-      
-        # Add new Tensors to "children" and old Tensors to "parents":
-        self.parents = (a,)
-        a.children.append(z)
-        self.cache = (a, data)
-
-        return z
-    
-    def backward(self, dz, z):
-        a, data = self.cache
-        
-        # Find gradients relative to "a", and pass it downstream:
-        if a.requires_grad:
-            # d/da(e^a) = e^a, apply the chain rule to the derivative of e^a:
-            da = data * dz
-            a.backward(da, z)
-
-class Log:
-    def __init__(self) -> None:
-        pass
-
-    def forward(self, a):
-        requires_grad = a.requires_grad
-     
-        # Get new Tensor's data:
-        data = np.log(a._data)
-     
-        # Create new Tensor:
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
-      
-        # Add new Tensors to "children" and old Tensors to "parents":
-        self.parents = (a,)
-        a.children.append(z)
-        self.cache = (a)
-
-        return z
-    
-    def backward(self, dz, z):
-        a = self.cache
-        
-        # Find gradients relative to "a", and pass it downstream:
-        if a.requires_grad:
-            # d/da(ln(a)) = (1/a), apply the chain rule to the derivative of the natural log:
-            da = (1 / a._data) * dz
-            a.backward(da, z)
-
-class Sqrt:
-    def __init__(self) -> None:
-        pass
-
-    def forward(self, a):
-        requires_grad = a.requires_grad
-     
-        # Get new Tensor's data:
-        data = np.sqrt(a._data)
-     
-        # Create new Tensor:
-        z = Tensor(data, requires_grad=requires_grad, operation=self) 
-     
-        # Add new Tensors to "children" and old Tensors to "parents":
-        self.parents = (a,)
-        a.children.append(z)
-        self.cache = (a, data)
-
-        return z
-    
-    def backward(self, dz, z):
-        a, data = self.cache
-        
-        # Find gradients relative to "a", and pass it downstream:
-        if a.requires_grad:
-            # d/dx(sqrt(a)) = (1/2) * (1/a), apply the chain rule to the derivative of the square root:
-            da = (1 / 2) * (1 / data) * dz
-            a.backward(da, z)
 
 # Tensor Operations:
 class Reshape:
@@ -697,6 +709,7 @@ class Reshape:
  
             a.backward(da, z)
 
+
 class Transpose:
     def __init__(self) -> None:
         pass
@@ -726,6 +739,7 @@ class Transpose:
             da = dz.swapaxes(*dims)
  
             a.backward(da, z)
+
 
 class Cat:
     def __init__(self) -> None:
@@ -764,6 +778,7 @@ class Cat:
                 di = dz[i]
     
                 tensor.backward(di, z)
+
 
 class Stack:
     def __init__(self) -> None:
@@ -804,6 +819,7 @@ class Stack:
     
                 tensor.backward(di, z)
 
+
 class MaskedFill:
     def __init__(self) -> None:
         pass
@@ -833,6 +849,7 @@ class MaskedFill:
             da = dz
  
             a.backward(da, z)
+
 
 class Slice:
     def __init__(self) -> None:
