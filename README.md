@@ -32,7 +32,7 @@
 - [Addition](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L205-L257)
 - [Subtraction](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L259-L286)
 - [Multiplication](https://github.com/eduardoleao052/Autograd-from-scratch/blob/97b5d4e9d9c118375e53699043556e4d68d7fce7/neuralforge/tensor_operations.py#L288-L342)
-- [Division]
+- [Division](https://github.com/eduardoleao052/Autograd-from-scratch/blob/c8c9b697815bc2c9efb1e9ce4d9ee490b43f19a2/neuralforge/tensor_operations.py#L400-L451)
 - [Matrix multiplication]
 - [Exponentiation]
 - [Log]
