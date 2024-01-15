@@ -3,7 +3,16 @@ import numpy as np
 
 # Tensor class, with __init__, backward, magic methods, and utils:
 class Tensor:
+    ''' Tensor class, with __init__, backward, magic methods, and utils '''
     def __init__(self, data, requires_grad = False, operation = None) -> None:
+        '''
+        Creates new instance of the Tensor class.
+
+        @param data (Array-like): Iterable containing the data to be stored in the Tensor.
+        @param requires_grad (Bool): Whether to keep track of the Tensor's gradients.
+        @param operation (Operation Object): When a tensor is created from other tensors, this stores
+        the operation that generated the new tensor (e.g. "Add", "Exp", "MatMul").
+        '''
         self._data = array(data)
         self.requires_grad = requires_grad
         self.operation = operation
@@ -16,9 +25,14 @@ class Tensor:
         return f"""({self._data}, requires_grad = {self.requires_grad})"""
 
     def data(self):
+        ''' Returns the data stored in the tensor as a Numpy Array. '''
         return self._data
     
     def backward(self, grad = None, z = None):
+        ''' 
+        Performs the backpropagation with gradient descent from current tensor.
+        Will fill every tensor's "grad" attribute with gradients relative to "self" (current Tensor).
+        '''
         if not self.requires_grad:
             return "this tensor has requires_grad set to False"
         
