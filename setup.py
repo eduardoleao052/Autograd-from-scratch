@@ -1,21 +1,6 @@
 ﻿from setuptools import setup, find_packages
 from argparse import ArgumentParser
 
-def get_version() -> str:
-    """
-    Parses and returns arguments from the terminal.
-
-    @returns args (Object): Arguments class.
-    """
-    parser = ArgumentParser(description='configuration of runtime application')
-
-    parser.add_argument('--version', nargs='?', type=str, default='0.0.0',
-                        help='version of the new release')
-
-    args = parser.parse_args()
-
-    return args.version
-
 def read_requirements(path: str) -> str:
   """
   Reads requirements.txt document and returns the contents.
@@ -42,7 +27,7 @@ def read_readme(path: str) -> str:
 
 setup(
   name = 'neuralforge',
-  version = get_version,
+  version = '0.0.8',
   author = 'Eduardo Leitao da Cunha Opice Leao',
   author_email = 'eduardoleao052@gmail.com',
   maintainer = 'Eduardo Leitao da Cunha Opice Leao',
