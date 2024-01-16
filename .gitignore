@@ -3,4 +3,3 @@ dist/
 build/
 neuralforge.egg-info/
 neuralforge/nn/__pycache__
-upload.sh
