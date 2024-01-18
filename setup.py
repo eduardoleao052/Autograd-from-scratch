@@ -27,7 +27,7 @@ def read_readme(path: str) -> str:
 
 setup(
   name = 'neuralforge',
-  version = '0.0.8',
+  version = '0.0.9',
   author = 'Eduardo Leitao da Cunha Opice Leao',
   author_email = 'eduardoleao052@gmail.com',
   maintainer = 'Eduardo Leitao da Cunha Opice Leao',

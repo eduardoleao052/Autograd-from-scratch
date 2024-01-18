@@ -217,8 +217,6 @@ class Parameter(Tensor):
         
 # Operations between two tensors:
 class Add:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
@@ -272,8 +270,6 @@ class Add:
 
 
 class Neg:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a):
         requires_grad = a.requires_grad
@@ -302,8 +298,6 @@ class Neg:
 
 
 class Mul:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
@@ -359,8 +353,6 @@ class Mul:
 
 
 class Div:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
@@ -417,8 +409,6 @@ class Div:
 
 
 class MatMul:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, b):
         requires_grad = a.requires_grad or b.requires_grad
@@ -472,8 +462,6 @@ class MatMul:
 
 # Element-wise operations:
 class Exp:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a):
         requires_grad = a.requires_grad
@@ -502,8 +490,6 @@ class Exp:
 
 
 class Log:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a):
         requires_grad = a.requires_grad
@@ -532,8 +518,6 @@ class Log:
 
 
 class Sqrt:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a):
         requires_grad = a.requires_grad
@@ -562,8 +546,6 @@ class Sqrt:
 
 # Statistics operations:
 class Sum:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
@@ -592,8 +574,6 @@ class Sum:
 
 
 class Mean:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
@@ -623,8 +603,6 @@ class Mean:
 
 
 class Max:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, dim, keepdims=False):
         requires_grad = a.requires_grad
@@ -662,8 +640,6 @@ class Max:
             
 
 class Var:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, dim, keepdims):
         requires_grad = a.requires_grad
@@ -694,8 +670,6 @@ class Var:
 
 # Tensor Operations:
 class Reshape:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, shape):
         requires_grad = a.requires_grad
@@ -725,8 +699,6 @@ class Reshape:
 
 
 class Transpose:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, *dims):
         requires_grad = a.requires_grad
@@ -756,8 +728,6 @@ class Transpose:
 
 
 class Cat:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, tensors: tuple, dim: int):
 
@@ -795,9 +765,7 @@ class Cat:
 
 
 class Stack:
-    def __init__(self) -> None:
-        pass
-
+    
     def forward(self, tensors: tuple, dim: int):
 
         # Verify if any original tensors requires grad:
@@ -835,8 +803,6 @@ class Stack:
 
 
 class MaskedFill:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, condition, value):
         requires_grad = a.requires_grad
@@ -866,8 +832,6 @@ class MaskedFill:
 
 
 class Slice:
-    def __init__(self) -> None:
-        pass
 
     def forward(self, a, index):
         requires_grad = a.requires_grad
