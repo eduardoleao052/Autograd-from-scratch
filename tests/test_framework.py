@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 sys.path.append('..')
 import neuralforge as forge
 import neuralforge.nn as nn
@@ -144,7 +144,7 @@ class TestNeuralForge(unittest.TestCase):
 
             return forge.tensor(input_idxs), target_idxs
 
-        # Implement dummy class inheriting from nn.Module:
+        # Implement dummy Transformer class inheriting from nn.Module:
         class Transformer(nn.Module):
             def __init__(self, vocab_size, hidden_size, n_timesteps, n_heads, p):
                 super().__init__()
@@ -178,7 +178,7 @@ class TestNeuralForge(unittest.TestCase):
         # Get path to root of repository:
         PATH = '/'.join(os.getcwd().split('/')[:-1])
 
-        # Get tiny Shakespeare test data:
+        # Get tiny Shakespeare text data:
         test_data, ix_to_char, vocab_size = load_text_data(f'{PATH}/data/shakespeare.txt')
 
         # Take small subset of the data to test wether the model converges:
@@ -208,8 +208,6 @@ class TestNeuralForge(unittest.TestCase):
 
             # Reset the gradients to zero after each training step:
             optimizer.zero_grad()
-
-        #print(sample(model, 1000, n_timesteps, vocab_size, ix_to_char))
         
         assert loss._data < 1, "Error: Loss is not converging to zero in autograd test."
 
