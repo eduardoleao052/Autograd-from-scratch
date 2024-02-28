@@ -65,16 +65,19 @@ def randint(low: int = 0, high: int = None, shape: tuple = (1), requires_grad: b
         data = np.random.randint(low, size=high)
     return Tensor(data, requires_grad=requires_grad)
 
-def randn(shape, requires_grad = False):
+def randn(shape, xavier = False, requires_grad = False):
     '''
     Creates new instance of the Tensor class, filled with floating point numbers in a normal distribution.
 
     @param shape (tuple): iterable with the shape of the resulting Tensor.
+    @param xavier (Bool): Whether to use Xavier initialization on tensor (scale by squre root of first dimension).
     @param requires_grad (Bool): Whether to keep track of the Tensor's gradients.
 
     @returns Tensor (Tensor): Tensor containining normally distributed floats with "shape" shape.
     '''
     data = np.random.randn(*shape)
+    if xavier:
+        data /= np.sqrt(shape[0])
     return Tensor(data, requires_grad=requires_grad)
 
 def rand(shape, requires_grad = False):
@@ -111,17 +114,18 @@ def ones_like(other: Tensor, requires_grad = False):
     shape = other.shape
     return ones(shape=shape, requires_grad=requires_grad)
 
-def randn_like(other: Tensor, requires_grad = False):
+def randn_like(other: Tensor, xavier = True, requires_grad = False):
     '''
     Creates new instance of the Tensor class with same shape as given Tensor,
     and filled with random floats in a normal distribution.
     @param other (Tensor): Tensor to copy shape from.
+    @param xavier (Bool): Whether to use Xavier initialization on tensor (scale by squre root of first dimension).
     @param requires_grad (Bool): Whether to keep track of the Tensor's gradients.
 
     @returns Tensor (Tensor): Tensor containining normally distributed floats with other Tensor's shape.
     '''
     shape = other.shape
-    return randn(shape=shape, requires_grad=requires_grad)
+    return randn(shape=shape, xavier=xavier, requires_grad=requires_grad)
 
 def randint_like(other: Tensor, low: int, high: int=0, requires_grad = False):
     '''
