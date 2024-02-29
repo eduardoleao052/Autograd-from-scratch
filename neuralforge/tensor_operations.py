@@ -540,7 +540,7 @@ class Sqrt:
         
         # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            # d/dx(sqrt(a)) = (1/2) * (1/a), apply the chain rule to the derivative of the square root:
+            # d/dx(sqrt(a)) = (1/2) * (1/sqrt(a)), apply the chain rule to the derivative of the square root:
             da = (1 / 2) * (1 / data) * dz
             a.backward(da, z)
 
