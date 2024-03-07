@@ -202,7 +202,7 @@ class Tensor:
         """
         Returns the original tensor with the values where condition is True set to "value".
 
-        @param condition (Array-like): two dimentions to be transposed.
+        @param condition (Array-like): matrix with True and False. Where this is False, will replace original with value.
         @param value (float): value to fill Tensor with, where condition is True.
         """
         op = MaskedFill()

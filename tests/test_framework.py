@@ -173,7 +173,7 @@ class TestNeuralForge(unittest.TestCase):
         hidden_size = 128
         batch_size = 4
         n_heads = 8
-        dropout_p = 0
+        dropout_p = 0.1
 
         # Get path to root of repository:
         PATH = '/'.join(os.getcwd().split('/')[:-1])
@@ -208,6 +208,7 @@ class TestNeuralForge(unittest.TestCase):
 
             # Reset the gradients to zero after each training step:
             optimizer.zero_grad()
+            print(loss)
         
         assert loss._data < 1, "Error: Loss is not converging to zero in autograd test."
 

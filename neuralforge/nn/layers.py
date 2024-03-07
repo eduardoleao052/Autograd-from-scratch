@@ -178,7 +178,7 @@ class Dropout(Module):
         if self.mode == 'eval':
             return z
         mask = rand(z.shape) > self.p
-        a = z.masked_fill(mask==False, 0) 
+        a = z.masked_fill(mask, 0) 
         a = a / (1 - self.p)
         return a
 
