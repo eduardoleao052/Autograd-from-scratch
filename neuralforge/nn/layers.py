@@ -122,7 +122,6 @@ class MultiHeadSelfAttention(Module):
         out = self.residual_proj(out) # (B, T, D) @ (D, D) -> (B, T, D)
         out = self.residual_dropout(out)
 
-        self.cache = (att, k, v, q)
         return out
 
 # Embedding Layers
@@ -142,7 +141,6 @@ class Embedding(Module):
         # Extracts embedding from row "idx":
         x = self.E[idx._data]
 
-        self.cache = (idx)
         return x
 
 

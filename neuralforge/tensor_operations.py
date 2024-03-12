@@ -816,17 +816,17 @@ class MaskedFill:
         # Add new Tensors to "children" and old Tensors to "parents":
         self.parents = (a,)
         a.children.append(z)
-        self.cache = (a)
+        self.cache = (a, condition)
 
         return z 
     
     def backward(self, dz, z):
-        a = self.cache
+        a, condition = self.cache
         
         # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
             # Because some activations are just set to a value, this operation is not differentiable.
-            da = dz
+            da = np.where(condition, dz, 0)
  
             a.backward(da, z)
 

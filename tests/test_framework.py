@@ -1,5 +1,3 @@
-import sys
-sys.path.append('..')
 import neuralforge as forge
 import neuralforge.nn as nn
 import unittest
@@ -173,7 +171,7 @@ class TestNeuralForge(unittest.TestCase):
         hidden_size = 128
         batch_size = 4
         n_heads = 8
-        dropout_p = 0.1
+        dropout_p = 0.2
 
         # Get path to root of repository:
         PATH = '/'.join(os.getcwd().split('/')[:-1])
@@ -189,7 +187,7 @@ class TestNeuralForge(unittest.TestCase):
 
         # Define loss function and optimizer:
         loss_func = nn.CrossEntropyLoss()
-        optimizer = nn.optim.Adam(model.parameters(), lr=0.005, reg=0)
+        optimizer = nn.optim.Adam(model.parameters(), lr=5e-3, reg=0)
         
         # Training Loop:
         for _ in range(n_iters):
@@ -208,7 +206,6 @@ class TestNeuralForge(unittest.TestCase):
 
             # Reset the gradients to zero after each training step:
             optimizer.zero_grad()
-            print(loss)
         
         assert loss._data < 1, "Error: Loss is not converging to zero in autograd test."
 
