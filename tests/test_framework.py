@@ -175,7 +175,7 @@ class TestNeuralForge(unittest.TestCase):
 
         # Get path to root of repository:
         PATH = '/'.join(os.getcwd().split('/')[:-1])
-
+        
         # Get tiny Shakespeare text data:
         test_data, ix_to_char, vocab_size = load_text_data(f'{PATH}/data/shakespeare.txt')
 
