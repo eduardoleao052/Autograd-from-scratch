@@ -166,12 +166,12 @@ class TestNeuralForge(unittest.TestCase):
                 return z
         
         # Declare variables and hyperparameters:
-        n_iters = 150
+        n_iters = 32
         n_timesteps = 32
         hidden_size = 128
         batch_size = 4
         n_heads = 8
-        dropout_p = 0.2
+        dropout_p = 0
 
         # Get path to root of repository:
         PATH = '/'.join(os.getcwd().split('/')[:-1])
@@ -200,14 +200,14 @@ class TestNeuralForge(unittest.TestCase):
 
             # Backpropagate the loss using neuralforge.tensor's backward() method:
             loss.backward()
-
+            print(loss)
             # Update the weights:
             optimizer.step()
-
+            
             # Reset the gradients to zero after each training step:
             optimizer.zero_grad()
         
-        assert loss._data < 1, "Error: Loss is not converging to zero in autograd test."
+        assert loss._data < 0.1, "Error: Loss is not converging to zero in autograd test."
 
 
 if __name__ == '__main__':

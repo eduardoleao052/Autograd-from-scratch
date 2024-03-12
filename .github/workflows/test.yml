@@ -20,6 +20,6 @@ jobs:
           pip install -r requirements.txt
       - name: Execute tests  # execute tests in tests/
         run: |
-          cd tests
-          python test_framework.py
+          cd neuralforge
+          python ../tests/test_framework.py
           cd ..
