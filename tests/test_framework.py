@@ -200,13 +200,13 @@ class TestNeuralForge(unittest.TestCase):
 
             # Backpropagate the loss using neuralforge.tensor's backward() method:
             loss.backward()
-            print(loss)
+
             # Update the weights:
             optimizer.step()
             
             # Reset the gradients to zero after each training step:
             optimizer.zero_grad()
-        
+            
         assert loss._data < 0.1, "Error: Loss is not converging to zero in autograd test."
 
 
