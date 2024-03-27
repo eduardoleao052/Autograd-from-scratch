@@ -114,6 +114,10 @@ class Tensor:
         """ self *= other """
         op = Mul()
         return op.forward(self, tensor(other))
+    
+    def __pow__(self, other):
+        op = Pow()
+        return op.forward(self, tensor(other))
 
     def __matmul__(self, other):
         """ New = self @ other """
@@ -407,6 +411,27 @@ class Div:
                     db = db.sum(axis=n, keepdims=True)
             b.backward(db, z)
 
+class Pow():
+    def forward(self, tensor_a, tensor_b):
+        requires_grad = tensor_a.requires_grad
+        data = tensor_a._data ** tensor_b._data
+        z = Tensor(data, requires_grad=requires_grad, operation=self)
+        tensor_a.children.append(z)
+        self.cache = (tensor_a, tensor_b)
+        return z
+    
+    def backward(self, dz, z):
+        tensor_a, tensor_b = self.cache
+        if tensor_a.requires_grad:
+            da = dz * (tensor_b._data * tensor_a._data ** (tensor_b._data-1))
+            grad_dim = len(da.shape)
+            in_dim = len(tensor_a.shape)
+            for _ in range(grad_dim - in_dim):
+                da = da.sum(axis=0)
+            for n, dim in enumerate(tensor_a.shape):
+                if dim == 1:
+                    da = da.sum(axis=n, keepdims=True)
+            tensor_a.backward(da, z)
 
 class MatMul:
 
@@ -627,7 +652,8 @@ class Max:
 
         # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            if a.shape != da.shape:
+            # Eu acreito que essá linha código esteja errada, da não está declarado 
+            if a.shape != dz.shape: # Eu acho que deve ser dz
                 # Brodcast upstream derivative to the size of "a":
                 dz = np.expand_dims(dz, axis=dim)
                 dz = dz * np.ones_like(a._data)
@@ -635,7 +661,7 @@ class Max:
                 max = np.expand_dims(data, axis=dim)
                 max = max * np.ones_like(a._data)
             # Add upstream gradients to the [max] values:
-            da = dz * np.equal(a._data, max)
+            da = dz * np.equal(a._data, max) # Acredito que tenha mais um erro, caso não entrar no if não tem a variável max
             a.backward(da, z)
             
 
