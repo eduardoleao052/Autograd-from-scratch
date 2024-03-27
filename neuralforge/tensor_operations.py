@@ -138,7 +138,7 @@ class Tensor:
         """ New = self > other """
         return self._data > array(other)
 
-    def max(self, dim, keepdims=False):
+    def max(self, dim=-1, keepdims=False):
         """
         Returns the largest values across the "dim" dimention.
         Example: (B, T, D), dim = 1 -> (B, D).
@@ -652,8 +652,8 @@ class Max:
 
         # Find gradients relative to "a", and pass it downstream:
         if a.requires_grad:
-            # Eu acreito que essá linha código esteja errada, da não está declarado 
-            if a.shape != dz.shape: # Eu acho que deve ser dz
+            max = data
+            if a.shape != dz.shape: 
                 # Brodcast upstream derivative to the size of "a":
                 dz = np.expand_dims(dz, axis=dim)
                 dz = dz * np.ones_like(a._data)
@@ -661,7 +661,7 @@ class Max:
                 max = np.expand_dims(data, axis=dim)
                 max = max * np.ones_like(a._data)
             # Add upstream gradients to the [max] values:
-            da = dz * np.equal(a._data, max) # Acredito que tenha mais um erro, caso não entrar no if não tem a variável max
+            da = dz * np.equal(a._data, max)
             a.backward(da, z)
             
 
