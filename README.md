@@ -19,7 +19,7 @@
 
 # Autograd Framework From Scratch
 - NeuralForge is a unit-tested and documented educational framework. Similar to PyTorch, but with more __clear code__.
-- The autograd from scratch engine is in [tensor_operations.py](neuralforge/tensor_operations.py). I got a lot of inspiration from Andrej Karpathy's micrograd videos.
+- The autograd from scratch engine is in [tensor_operations.py](neuralforge/tensor_operations.py).
 - The deep learning model layers are in [nn/layers.py](neuralforge/nn/layers.py).
 <br/>
 <details>
